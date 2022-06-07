@@ -1,0 +1,10 @@
+*/__pycache__/*
+*/*.pyc
+*/detected/*
+*/annotated/*
+*/*.pyc
+*/video.mp4
+data/*
+.ssl_certificates/
+venv/
+.temp.mp4
