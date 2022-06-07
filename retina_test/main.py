@@ -89,12 +89,13 @@ def ProcessImage(img, args, model_args):
                                                      img, bboxes, device)
     if args['DEBUG_MODE']:
         print(faces.shape)
+        print(bboxes.shape)
 
     face_ids, result_probs = mtcnn_recognition(model_args['Face_db'],
                                             unknown_embeddings,
                                             args['RECOG_THRESHOLD'])
     # Mosaic
-    img = Mosaic(img, bboxes, face_ids, n=10)
+    # img = Mosaic(img, bboxes, face_ids, n=10)
 
     # 특정인에 bbox와 name을 보여주고 싶으면
     processed_img = DrawRectImg(img, bboxes, face_ids)

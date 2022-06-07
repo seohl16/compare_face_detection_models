@@ -28,18 +28,17 @@ def init(args):
 
     # Load mtcnn
     # 이걸로 image crop하는데 이 것도 나중에 자체 기능으로 빼야함. util.py의 CropRoiImg를 좀 쓰면 될 듯.
-    mtcnn = MTCNN(
+    model_args['Mtcnn'] = MTCNN(
         image_size=160, margin=0, min_face_size=20,
         thresholds = [0.6, 0.7, 0.7], factor=0.709, post_process=True, 
         device=device, keep_all=True
     )
-    model_args['Mtcnn'] = mtcnn
     
     # Load Detection Model
     if args['DETECTOR'] == 'mtcnn':
         # model_detection = MTCNN(keep_all=True)
         # 나중에 image crop 자체 기능 구현되면 위 코드를 여기로
-        model_detection = mtcnn
+        model_detection = MTCNN(keep_all=True)
     else:
         model_path = 'retinaface_utils/weights/mobilenet0.25_Final.pth'
         backbone_path = './retinaface_utils/weights/mobilenetV1X0.25_pretrain.tar'
@@ -48,7 +47,6 @@ def init(args):
         model_detection.to(device)
         model_detection.eval()
     model_args['Detection'] = model_detection
-
     # Load Recognition Models
     resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
     model_args['Recognition'] = resnet
@@ -76,9 +74,9 @@ def ProcessImage(img, args, model_args):
     # bboxes = ML.Detection(img, args, model_args)
     device = model_args['Device']
     bboxes = mtcnn_detection(model_args['Detection'], img, device)
+    print(bboxes) #, model_args['Detection'])
     if bboxes is None:
         return img
-
     # Object Recognition
     # face_ids = ML.Recognition(img, bboxes, args, model_args)
     
@@ -88,12 +86,13 @@ def ProcessImage(img, args, model_args):
                                                      img, bboxes, device)
     if args['DEBUG_MODE']:
         print(faces.shape)
+        print(bboxes.shape)
 
     face_ids, result_probs = mtcnn_recognition(model_args['Face_db'],
                                             unknown_embeddings,
                                             args['RECOG_THRESHOLD'])
     # Mosaic
-    img = Mosaic(img, bboxes, face_ids, n=10)
+    # img = Mosaic(img, bboxes, face_ids, n=10)
 
     # 특정인에 bbox와 name을 보여주고 싶으면
     processed_img = DrawRectImg(img, bboxes, face_ids)
@@ -109,9 +108,11 @@ def main(args):
     if args['PROCESS_TARGET'] == 'Image':
         # Color channel: BGR
         img = cv2.imread(image_dir)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         start = time()
         img = ProcessImage(img, args, model_args)
         print('image done.', time() - start)
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         cv2.imwrite(args['SAVE_DIR'] + '/output.jpg', img)
         print('image process complete!')
     # =================== Image =======================

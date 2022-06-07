@@ -18,7 +18,9 @@ def collate_fn(x):
 
 
 def mtcnn_detection(model, img, device):
-    bboxes, probs = model.detect(img, landmarks=False)
+    # model = MTCNN(keep_all=True, device=device)
+
+    bboxes, probs, landmarks= model.detect(img, landmarks=True)
     return bboxes
 
 

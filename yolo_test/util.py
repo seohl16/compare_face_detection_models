@@ -115,13 +115,21 @@ def DrawRectImg(img, bboxes, identities, id_name=None):
     for bbox, face_id in zip(bboxes, identities):
         if id_name:
             face_id = id_name[face_id]
-        if face_id != 'unknown':
-            # bbox: x0, y0, x1, y1
-            bbox = np.round(bbox).astype(int)
-            cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[2], bbox[3]),
-                            rect_color, rect_thickness)
-            cv2.putText(img, face_id, (bbox[0], bbox[1]-5),
-                            1, font_scale, font_color, font_thickness)
+        
+        # bbox: x0, y0, x1, y1
+        bbox = np.round(bbox).astype(int)
+        cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[2], bbox[3]),
+                        rect_color, rect_thickness)
+        # cv2.putText(img, face_id, (bbox[0], bbox[1]-5),
+        #                 1, font_scale, font_color, font_thickness)
+        
+        # if face_id != 'unknown':
+        #     # bbox: x0, y0, x1, y1
+        #     bbox = np.round(bbox).astype(int)
+        #     cv2.rectangle(img, (bbox[0], bbox[1]), (bbox[2], bbox[3]),
+        #                     rect_color, rect_thickness)
+        #     cv2.putText(img, face_id, (bbox[0], bbox[1]-5),
+        #                     1, font_scale, font_color, font_thickness)
 
     return img
 

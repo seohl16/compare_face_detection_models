@@ -8,3 +8,4 @@ data/*
 .ssl_certificates/
 venv/
 .temp.mp4
+**/results/*

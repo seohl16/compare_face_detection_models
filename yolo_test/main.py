@@ -16,6 +16,7 @@ from retinaface_utils.models.retinaface import RetinaFace
 from retinaface_utils.data.config import cfg_mnet
 
 from detect_face import load_models
+import os
 
 
 def init(args):
@@ -38,6 +39,7 @@ def init(args):
     else: # yolo
         model_detection = load_models("./weights/yolov5n-face.pt", device)
         model_detection.to(device)
+        print('yolo model on device...')
         model_detection.eval()
 
     model_args['Detection'] = model_detection
@@ -71,12 +73,15 @@ def ProcessImage(img, args, model_args):
 
     # Object Recognition
     face_ids, probs = ML.Recognition(img, bboxes, args, model_args)
+    print(args['DEBUG_MODE'])
+    if args['DEBUG_MODE']:
+        print(len(bboxes))
 
     # Mosaic
-    processed_img = Mosaic(img, bboxes, face_ids, n=10)
+    # img = Mosaic(img, bboxes, face_ids, n=10)
 
     # 특정인에 bbox와 name을 보여주고 싶으면
-    processed_img = DrawRectImg(processed_img, bboxes, face_ids)
+    processed_img = DrawRectImg(img, bboxes, face_ids)
 
     return processed_img
 
@@ -115,6 +120,8 @@ def main(args):
 
     # =================== Image =======================
     image_dir = args['IMAGE_DIR']
+    if not os.path.exists(args['SAVE_DIR']):
+        os.mkdir(args['SAVE_DIR'])
     if args['PROCESS_TARGET'] == 'Image':
         # Color channel: BGR
         img = cv2.imread(image_dir)
