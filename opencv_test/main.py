@@ -1,7 +1,7 @@
 import cv2  
 import sys 
 import argparse
-
+import os
 class Args(object):
     parser = argparse.ArgumentParser(description='Arguments for Unknown mosaic')
     parser.add_argument('--image_dir', default="../data/dest_images/findobama/twopeople.jpeg", help='Directory to image')
@@ -24,12 +24,16 @@ def main(args):
     
     # Draw rectangle around the faces  
     for (x, y, w, h) in faces:  
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)  
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)  
     
     # Display the output  
     # cv2.imshow('image', img)  
     # cv2.waitKey() 
-    cv2.imwrite(args.save_name, img)
+
+    if not os.path.exists('./saved'):
+        os.makedirs('./saved')
+    cv2.imwrite('./saved/output.jpg', img)
+    # cv2.imwrite(args.save_name, img)
 
 if __name__ == "__main__":
     args = Args().parse

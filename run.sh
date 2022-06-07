@@ -1,6 +1,3 @@
-cp util.py mtcnn_test/util.py
-cp util.py retina_test/util.py
-cp util.py yolo_test/util.py
 IDIR="../data/dest_images/stock.jpeg" #FIXME
 NUM=stock #FIXME
 
@@ -22,7 +19,7 @@ NUM=stock #FIXME
 # mv ./saved/output.jpg ../results/$NUM-opencv.jpg
 
 cd faceboxes_test 
-python infer.py --image_dir $IDIR 
+python main.py --image_dir $IDIR 
 mv ./saved/output.jpg ../results/$NUM-faceboxes.jpg
 
 cd ../

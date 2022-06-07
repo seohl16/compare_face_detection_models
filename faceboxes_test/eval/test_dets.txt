@@ -1,8 +1,6 @@
-../data/dest_images/stock.jpeg 1.000 70.5 197.0 156.8 286.7
-../data/dest_images/stock.jpeg 1.000 236.9 177.3 314.8 260.8
-../data/dest_images/stock.jpeg 1.000 384.2 78.2 446.5 143.5
-../data/dest_images/stock.jpeg 0.999 313.4 183.9 383.1 257.4
-../data/dest_images/stock.jpeg 0.997 167.3 104.4 244.7 185.8
-../data/dest_images/stock.jpeg 0.993 443.5 168.2 522.2 248.6
-../data/dest_images/stock.jpeg 0.991 298.8 90.7 367.0 155.0
-../data/dest_images/stock.jpeg 0.071 345.6 87.4 384.0 127.8
+../data/dest_images/kakao/kakao3.jpeg 0.999 332.0 152.5 401.4 229.6
+../data/dest_images/kakao/kakao3.jpeg 0.999 424.6 189.6 481.3 242.7
+../data/dest_images/kakao/kakao3.jpeg 0.990 602.2 253.7 643.6 298.4
+../data/dest_images/kakao/kakao3.jpeg 0.990 28.8 276.6 71.4 319.8
+../data/dest_images/kakao/kakao3.jpeg 0.186 774.7 199.4 845.0 271.9
+../data/dest_images/kakao/kakao3.jpeg 0.050 904.5 456.7 1126.8 668.3

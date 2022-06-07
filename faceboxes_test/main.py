@@ -27,6 +27,8 @@ parser.add_argument('--keep_top_k', default=750, type=int, help='keep_top_k')
 parser.add_argument('-s', '--show_image', action="store_true", default=True, help='show detection results')
 parser.add_argument('--vis_thres', default=0.5, type=float, help='visualization_threshold')
 parser.add_argument('--image_dir', default="../data/dest_images/findobama/twopeople.jpeg", help='Directory to image')
+parser.add_argument('--debug_mode', type=bool, default=False, help='print on off')
+parser.add_argument('--process_target', type=str, default='Image', help='Image, Video, Cam')
 args = parser.parse_args()
 
 
@@ -184,7 +186,7 @@ if __name__ == '__main__':
                     continue
                 text = "{:.4f}".format(b[4])
                 b = list(map(int, b))
-                cv2.rectangle(img_raw, (b[0], b[1]), (b[2], b[3]), (0, 0, 255), 2)
+                cv2.rectangle(img_raw, (b[0], b[1]), (b[2], b[3]), (255, 0, 0), 2)
                 cx = b[0]
                 cy = b[1] + 12
                 # cv2.putText(img_raw, text, (cx, cy),
