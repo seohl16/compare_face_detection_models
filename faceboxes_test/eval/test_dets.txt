@@ -1,0 +1,8 @@
+../data/dest_images/stock.jpeg 1.000 70.5 197.0 156.8 286.7
+../data/dest_images/stock.jpeg 1.000 236.9 177.3 314.8 260.8
+../data/dest_images/stock.jpeg 1.000 384.2 78.2 446.5 143.5
+../data/dest_images/stock.jpeg 0.999 313.4 183.9 383.1 257.4
+../data/dest_images/stock.jpeg 0.997 167.3 104.4 244.7 185.8
+../data/dest_images/stock.jpeg 0.993 443.5 168.2 522.2 248.6
+../data/dest_images/stock.jpeg 0.991 298.8 90.7 367.0 155.0
+../data/dest_images/stock.jpeg 0.071 345.6 87.4 384.0 127.8
