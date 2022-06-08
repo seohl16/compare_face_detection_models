@@ -9,3 +9,6 @@ data/*
 venv/
 .temp.mp4
 **/results/*
+**/*.jpeg.txt
+**/face_db*
+**/saved/*
