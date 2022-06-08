@@ -7,7 +7,7 @@ from args import Args
 
 import ml_part as ML
 from database import load_face_db
-from facenet_pytorch import InceptionResnetV1
+from facenet_pytorch import InceptionResnetV1, MTCNN
 
 from deep_sort.deep_sort_face import DeepSortFace
 
@@ -17,6 +17,7 @@ from retinaface_utils.data.config import cfg_mnet
 
 from detect_face import load_models
 import os
+from glob import glob
 
 
 def init(args):
@@ -36,6 +37,8 @@ def init(args):
         model_detection = load_model(model_detection, model_path, device)
         model_detection.to(device)
         model_detection.eval()
+    elif args['DETECTOR'] == 'mtcnn':
+        model_detection = MTCNN(keep_all=True, device=device).eval()
     else: # yolo
         model_detection = load_models("./weights/yolov5n-face.pt", device)
         model_detection.to(device)
@@ -43,7 +46,7 @@ def init(args):
         model_detection.eval()
 
     model_args['Detection'] = model_detection
-
+    print(args['DETECTOR'],  'loaded')
     # Load Recognition Models
     resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
@@ -72,18 +75,18 @@ def ProcessImage(img, args, model_args):
     if bboxes is None: return img
 
     # Object Recognition
-    face_ids, probs = ML.Recognition(img, bboxes, args, model_args)
-    print(args['DEBUG_MODE'])
-    if args['DEBUG_MODE']:
-        print(len(bboxes))
+    # face_ids, probs = ML.Recognition(img, bboxes, args, model_args)
+    # if args['DEBUG_MODE']:
+    #     print(len(bboxes))
 
     # Mosaic
-    # img = Mosaic(img, bboxes, face_ids, n=10)
+    face_ids = ['kno'] * len(bboxes)
+    img = Mosaic(img, bboxes, face_ids, n=10)
 
     # 특정인에 bbox와 name을 보여주고 싶으면
-    processed_img = DrawRectImg(img, bboxes, face_ids)
+    # img = DrawRectImg(img, bboxes, face_ids)
 
-    return processed_img
+    return img
 
 
 def ProcessVideo(img, args, model_args, id_name):
@@ -133,9 +136,8 @@ def main(args):
     # =================== Image =======================
 
     # =================== Video =======================
-    elif args['PROCESS_TARGET'] == 'Video':
-        video_path = '../data_/dest_images/mudo.mp4'
-
+    elif args['PROCESS_TARGET'] == 'Video' and False:
+        video_path = '../data/99_YTN_program-0000_done/video-0030/clip-0000.mp4'
         cap = cv2.VideoCapture(video_path)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         width = int(cap.get(3))
@@ -144,27 +146,83 @@ def main(args):
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         fps = cap.get(cv2.CAP_PROP_FPS)
         out = cv2.VideoWriter(args['SAVE_DIR'] + '/output.mp4', fourcc, fps, (width, height))
-        # frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        
+        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print(frame_count)
         id_name = {}
         start = time()
+        frame_count = 0
         while True:
             ret, img = cap.read()
             # Color channel: BGR
             if ret:
+                frame_count += 1
                 if args['TRACKING']:
                     img, id_name = ProcessVideo(img, args, model_args, id_name)
                 else:
                     img = ProcessImage(img, args, model_args)
-                out.write(img)
+                # out.write(img)
             else:
                 break
 
         cap.release()
         out.release()
-        print(f'original video fps: {fps}')
-        print(f'time: {time() - start}')
+        totaltime = time()-start
+        print(f'time: {totaltime}')
+        fps = frame_count / totaltime
+        print('{:s} {:f} {:f} {:f}\n'.format(video_path, fps, frame_count, totaltime))
         print('done.')
+    elif args['PROCESS_TARGET'] == 'Video':
+        video_path = '../data/99_YTN_program-0000_done/'
+        videos = glob(video_path + '*/*.mp4')
+        print(videos)
+        if not os.path.exists('./saved'):
+            os.makedirs('./saved')
+        fw = open(os.path.join('./saved/', args['DETECTOR'] + '_YTN_programm-0000' + '.txt'), 'a')
+        cnt = 0
+        for single_video_path in videos : 
+            print(single_video_path)
+            cnt += 1
+            if cnt < 30: 
+                continue
+            if cnt == 50: 
+                break
+            cap = cv2.VideoCapture(single_video_path)
+            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            width = int(cap.get(3))
+            height = int(cap.get(4))
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            out = cv2.VideoWriter(args['SAVE_DIR'] + '/output.mp4', fourcc, fps, (width, height))
+            frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            print(frame_count)
+            id_name = {}
+            start = time()
+            frame_count = 0
+            while True:
+                ret, img = cap.read()
+                # Color channel: BGR
+                if ret:
+                    frame_count += 1
+                    if args['TRACKING']:
+                        img, id_name = ProcessVideo(img, args, model_args, id_name)
+                    else:
+                        img = ProcessImage(img, args, model_args)
+                    # out.write(img)
+                else:
+                    break
+
+            cap.release()
+            out.release()
+            totaltime = time()-start
+            print(f'time: {totaltime}')
+            img_name = (single_video_path).split('/')
+            img_name = img_name[-2] + '/' + img_name[-1]
+            fps = frame_count / totaltime
+            fw.write('{:s} {:f} {:f} {:f}\n'.format(img_name, fps, frame_count, totaltime))
+            print('{:s} {:f} {:f} {:f}\n'.format(img_name, fps, frame_count, totaltime))
+
+            print('done.')
     # ====================== Video ===========================
 
     else: # WebCam
