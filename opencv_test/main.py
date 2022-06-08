@@ -24,7 +24,7 @@ def main(args):
     
     # Draw rectangle around the faces  
     for (x, y, w, h) in faces:  
-        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)  
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
     
     # Display the output  
     # cv2.imshow('image', img)  

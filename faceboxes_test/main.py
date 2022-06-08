@@ -85,7 +85,8 @@ if __name__ == '__main__':
     # save file
     if not os.path.exists(args.save_folder):
         os.makedirs(args.save_folder)
-    fw = open(os.path.join(args.save_folder, args.dataset + '_dets.txt'), 'w')
+    img_name = (args.image_dir).split('/')[-1]
+    fw = open(os.path.join(args.save_folder, img_name + '.txt'), 'w')
 
     # testing dataset
     # testset_folder = os.path.join('data', args.dataset, 'images/')
@@ -106,9 +107,8 @@ if __name__ == '__main__':
     # testing begin
     test_dataset = [args.image_dir]
     num_images = len(test_dataset)
-    for i, img_name in enumerate(test_dataset):
+    for i, image_path in enumerate(test_dataset):
         # image_path = testset_folder + img_name + '.jpeg'
-        image_path = img_name
         print(image_path)
         img_raw = cv2.imread(image_path, cv2.IMREAD_COLOR)
         img = np.float32(img_raw)

@@ -6,6 +6,7 @@ from retinaface_utils.util import retinaface_detection
 from detect_face import yolo_detection
 from util import xyxy2xywh
 
+import os
 
 def Detection(img, args, model_args):
     '''
@@ -17,7 +18,17 @@ def Detection(img, args, model_args):
         bboxes, probs = retinaface_detection(model_args['Detection'], img, device)
     else: # yolo
         bboxes, probs = yolo_detection(model_args['Detection'], img, device)
-
+    
+    if not os.path.exists('./saved'):
+        os.makedirs('./saved')
+    img_name = (args['IMAGE_DIR']).split('/')[-1]
+    fw = open(os.path.join('./saved/', img_name + '.txt'), 'w')
+    for bbox, score in zip(bboxes, probs):
+        xmin, ymin, xmax, ymax = bbox[0], bbox[1], bbox[2], bbox[3]
+        # print(img_name, score, xmin, ymin, xmax, ymax)
+        # fw.write('{:s} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.format(img_name, score[0], xmin, ymin, xmax, ymax))
+        fw.write('{:s} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.format(img_name, score[0], xmin, ymin, xmax, ymax))
+    
     # 이미지 범위 외로 나간 bbox값 범위 처리
     if bboxes is not None:
         bboxes = Get_normal_bbox(img.shape, bboxes)

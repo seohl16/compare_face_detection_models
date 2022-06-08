@@ -1,0 +1,5 @@
+python main.py --image_dir '../data/dest_images/kakao/kakao1.jpeg'
+python main.py --image_dir '../data/dest_images/kakao/kakao2.jpeg'
+python main.py --image_dir '../data/dest_images/kakao/kakao3.jpeg'
+python main.py --image_dir '../data/dest_images/masked.jpeg'
+python main.py --image_dir '../data/dest_images/stock.jpeg'

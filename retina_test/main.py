@@ -76,7 +76,7 @@ def ProcessImage(img, args, model_args):
     # Object Detection
     # bboxes = ML.Detection(img, args, model_args)
     device = model_args['Device']
-    bboxes = retinaface_detection(model_args['Detection'], img, device)
+    bboxes = retinaface_detection(model_args['Detection'], img, device, args['IMAGE_DIR'])
     if bboxes is None:
         return img
 

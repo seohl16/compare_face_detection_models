@@ -6,11 +6,21 @@ from retinaface_utils.layers.functions.prior_box import PriorBox
 from retinaface_utils.utils.box_utils import decode, decode_landm
 from retinaface_utils.utils.nms.py_cpu_nms import py_cpu_nms
 from retinaface_utils.data.config import cfg_mnet
+import os 
 
-def retinaface_detection(model, img_raw, device):
+def retinaface_detection(model, img_raw, device, image_dir):
     img, scale, resize = retinaface_preprocess(img_raw, device)
     loc, conf, landms = model(img)  # forward pass
-    n_dets = retinaface_postprocess(loc, conf, landms, scale, resize, img.shape, device)
+    n_dets, scores = retinaface_postprocess(loc, conf, landms, scale, resize, img.shape, device)
+    # print(n_dets, scores)
+    if not os.path.exists('./saved'):
+        os.makedirs('./saved')
+    img_name = (image_dir).split('/')[-1]
+    fw = open(os.path.join('./saved/', img_name + '.txt'), 'w')
+    for bbox, score in zip(n_dets, scores):
+        xmin, ymin, xmax, ymax = bbox[0], bbox[1], bbox[2], bbox[3]
+        print(img_name, bbox, score)
+        fw.write('{:s} {:.3f} {:.1f} {:.1f} {:.1f} {:.1f}\n'.format(img_name, score, xmin, ymin, xmax, ymax))
     return n_dets
 
 def retinaface_preprocess(img_raw, device):
@@ -83,10 +93,11 @@ def retinaface_postprocess(loc, conf, landms, scale, resize, img_shape, device):
     keep = py_cpu_nms(dets, 0.4) # nms_threshold 0.4
     dets = dets[keep, :]
     landms = landms[keep]
+    scores = scores[keep]
 
     # keep top-K faster NMS
     # dets = dets[:args.keep_top_k, :]
     # landms = landms[:args.keep_top_k, :]
     
     # dets = np.concatenate((dets, landms), axis=1)
-    return dets[:, :4]
+    return dets[:, :4], scores

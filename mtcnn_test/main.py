@@ -2,6 +2,7 @@ from time import time
 import cv2
 from PIL import Image
 import torch
+import os
 import torchvision
 
 from util import Mosaic, DrawRectImg
@@ -73,7 +74,7 @@ def ProcessImage(img, args, model_args):
     # Object Detection
     # bboxes = ML.Detection(img, args, model_args)
     device = model_args['Device']
-    bboxes = mtcnn_detection(model_args['Detection'], img, device)
+    bboxes = mtcnn_detection(model_args['Detection'], img, device, args['IMAGE_DIR'])
     print(bboxes) #, model_args['Detection'])
     if bboxes is None:
         return img
