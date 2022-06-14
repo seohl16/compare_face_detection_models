@@ -107,7 +107,7 @@ def Mosaic(img, bboxes, identities, n, id_name=None):
 
 def DrawRectImg(img, bboxes, identities, id_name=None):
     rect_color = (0, 0, 255) # BGR
-    rect_thickness = 2 # 이미지 사이즈에 맞게 조절해야할지도
+    rect_thickness = 5 # 이미지 사이즈에 맞게 조절해야할지도
     font_scale = 1 # 위와 동일
     font_color = (0, 0, 255) # BGR
     font_thickness = 1 # 위와 동일
